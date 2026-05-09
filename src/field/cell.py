@@ -10,6 +10,7 @@ class Cell:
         row (int): Row number where this cell is located on the field.
         col (int): Column number where this cell is located on the field.
         pos (numpy.NDArray): Position of this cell.
+        neighborhood (list[src.field.cell.Cell]): List of neighbor cells.
         elev (float): Elevation (m).
     """
 
@@ -25,5 +26,7 @@ class Cell:
 
         self.pos = np.array(
             [self.col + (self.row % 2)/2, self.row], dtype=np.float32)
+
+        self.neighborhood = []
 
         self.elev = 0.0  # Elevation (m)
