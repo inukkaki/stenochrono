@@ -4,4 +4,6 @@ stupid civilization simulator
 
 ## How to run this script
 
-under construction
+```
+python -m src.main
+```
