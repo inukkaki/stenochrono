@@ -1,5 +1,7 @@
 """Module for rendering cells and fields."""
 
+import itertools
+
 import pygame
 
 RENDER_CELL_WIDTH = 4.0
@@ -35,3 +37,16 @@ def render_cell(surface, cell, color_func):
     color = color_func(cell)
     rect = calc_cell_rect(cell)
     pygame.draw.rect(surface, color, rect)
+
+
+def render_field(surface, field, color_func):
+    """Render a field on a surface.
+
+    Args:
+        surface (pygame.Surface): Surface for rendering the cell.
+        field (src.field.field.Field): Field to render.
+        color_func (Callable[src.field.cell.Cell, numpy.NDArray]): Function to
+            calculate the rendering color.
+    """
+    for cell in itertools.chain.from_iterable(field.cells):
+        render_cell(surface, cell, color_func)
