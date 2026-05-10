@@ -4,13 +4,12 @@ import time
 import pygame
 import pygame.locals
 
-#DEBUG
 from src.field.field import Field
-from src.field.cell import Cell
-from src.field.render import (
-    render_cell, render_field, RENDER_CELL_WIDTH, RENDER_CELL_HEIGHT,
-    calc_cell_rect,
-)
+from src.field.render import render_field, calc_elev_color
+from src.field.terrain import generate_terrain
+
+#DEBUG
+import numpy as np
 
 
 if __name__ == "__main__":
@@ -29,16 +28,16 @@ if __name__ == "__main__":
 
     #DEBUG
     field = Field()
+    seed = 186
+    # 119, 137, 153, 156, *186, 258, 281, 374, 394, 473, 573, 662
+    generate_terrain(field, seed)
 
     field_surface = pygame.Surface(size=[1026, 514], flags=pygame.SRCALPHA)
-    render_field(field_surface, field, lambda _: [255, 255, 255])
+    render_field(field_surface, field, calc_elev_color)
 
     window.fill([0, 0, 0])
     window.blit(field_surface, [0, 0])
     pygame.display.update()
-
-    r = 0
-    c = 0
 
     # Main loop
     running = True
@@ -50,23 +49,21 @@ if __name__ == "__main__":
                 running = False
             #DEBUG
             if event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_w: r -= 1
-                if event.key == pygame.K_a: c -= 1
-                if event.key == pygame.K_s: r += 1
-                if event.key == pygame.K_d: c += 1
+                changed = False
+                if event.key == pygame.K_LEFT:
+                    seed -= 1
+                    changed = True
+                if event.key == pygame.K_RIGHT:
+                    seed += 1
+                    changed = True
+                if changed:
+                    generate_terrain(field, seed)
+                    print(seed)
+                    render_field(field_surface, field, calc_elev_color)
+                    window.blit(field_surface, [0, 0])
+                    pygame.display.update()
         if not running:
             break
-
-        #DEBUG
-        r %= field.height
-        c %= field.width
-
-        window.blit(field_surface, [0, 0])
-        cell = field.cells[r][c]
-        pygame.draw.rect(window, [255, 0, 0], calc_cell_rect(cell))
-        for neighbor in cell.neighborhood:
-            pygame.draw.rect(window, [0, 255, 255], calc_cell_rect(neighbor))
-        pygame.display.update()
 
         time.sleep(0.0167)
 

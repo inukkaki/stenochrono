@@ -22,6 +22,7 @@ class Field:
         width (int): Number of columns in the cell array.
         height (int): Number of rows in the cell array.
         cells (list[list[src.field.cell.Cell]]): 2D array of cells.
+        seed (int | None): Seed value of this field.
     """
 
     def __init__(self):
@@ -38,6 +39,8 @@ class Field:
                 temp_cells.append(cell)
             self.cells.append(temp_cells)
         self.set_neighborhood_of_cells()
+
+        self.seed = None
 
     def set_neighborhood_of_cells(self):
         """Sets every cell's neighborhood in the array."""
