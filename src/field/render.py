@@ -2,6 +2,7 @@
 
 import itertools
 
+import matplotlib.cm as cm
 import numpy as np
 import pygame
 
@@ -28,6 +29,8 @@ RENDER_ELEV_LAND_COLOR_MIN = 47.0
 RENDER_ELEV_LAND_COLOR_MAX = 255.0
 RENDER_ELEV_LAND_COLOR_WIDTH = (
     RENDER_ELEV_LAND_COLOR_MAX - RENDER_ELEV_LAND_COLOR_MIN)
+
+RENDER_STPN_MAX = 5.0
 
 
 def calc_elev_sea_color(elev):
@@ -83,6 +86,26 @@ def calc_elev_color(cell):
     elif cell.surface == Cell.SURFACE_LAND:
         c = calc_elev_land_color(cell.elev)
         color = np.array([c, c, c, 255.0], dtype=np.float32)
+    else:
+        color = np.array([255.0, 0.0, 255.0, 255.0], dtype=np.float32)
+    return color
+
+
+def calc_stpn_color(cell):
+    """Calculates the rendering color based on the steepness of a cell.
+
+    Args:
+        cell (src.field.cell.Cell): Cell to render.
+
+    Returns:
+        out (numpy.NDArray): Color vector (RGBA).
+    """
+    if cell.surface == Cell.SURFACE_SEA:
+        c = calc_elev_sea_color(cell.elev)
+        color = np.array([c, c, c, 255.0], dtype=np.float32)
+    elif cell.surface == Cell.SURFACE_LAND:
+        x = min(cell.stpn, RENDER_STPN_MAX)/RENDER_STPN_MAX
+        color = 255.0*np.array(cm.viridis(x), dtype=np.float32)
     else:
         color = np.array([255.0, 0.0, 255.0, 255.0], dtype=np.float32)
     return color

@@ -23,6 +23,8 @@ ELEV_GEN_COMPLEXITY = 1.0
 ELEV_GEN_ADJUST_OFFSET = -0.25
 ELEV_GEN_ADJUST_SCALE = 0.5
 
+STPN_FACTOR = 1/100  # m -1
+
 
 def create_close_list(field):
     """Creates a close list consistent with cells in a field.
@@ -231,6 +233,19 @@ def determine_sea_or_land(field):
             cell.surface = Cell.SURFACE_LAND
 
 
+def calc_stpns(field):
+    """Calculates the steepness of cells in a field.
+
+    Args:
+        field (src.field.field.Field): Field to generate the terrain on.
+    """
+    for cell in itertools.chain.from_iterable(field.cells):
+        cell.stpn = 0.0
+        for neighbor in cell.neighborhood:
+            cell.stpn += STPN_FACTOR*abs(neighbor.elev - cell.elev)
+        cell.stpn /= len(cell.neighborhood)
+
+
 def generate_terrain(field, seed):
     """Generates the terrain on a field.
 
@@ -242,3 +257,4 @@ def generate_terrain(field, seed):
     rng = np.random.default_rng(field.seed)
     generate_elevs(field, rng)
     determine_sea_or_land(field)
+    calc_stpns(field)

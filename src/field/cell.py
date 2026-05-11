@@ -12,6 +12,8 @@ class Cell:
         pos (numpy.NDArray): Position of this cell.
         neighborhood (list[src.field.cell.Cell]): List of neighbor cells.
         elev (float): Elevation (m).
+        stpn (float): Steepness. This value is calculated as the average
+            elevation difference every 100 meters between neighbor cells.
         surface (int): State of this cell's surface.
     """
     SURFACE_SEA = 0
@@ -33,5 +35,6 @@ class Cell:
         self.neighborhood = []
 
         self.elev = 0.0  # Elevation (m)
+        self.stpn = 0.0  # Steepness
 
         self.surface = Cell.SURFACE_SEA

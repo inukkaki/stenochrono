@@ -5,7 +5,7 @@ import pygame
 import pygame.locals
 
 from src.field.field import Field
-from src.field.render import render_field, calc_elev_color
+from src.field.render import render_field, calc_elev_color, calc_stpn_color
 from src.field.terrain import generate_terrain
 
 #DEBUG
@@ -34,6 +34,7 @@ if __name__ == "__main__":
 
     field_surface = pygame.Surface(size=[1026, 514], flags=pygame.SRCALPHA)
     render_field(field_surface, field, calc_elev_color)
+    mode = 0
 
     window.fill([0, 0, 0])
     window.blit(field_surface, [0, 0])
@@ -51,15 +52,18 @@ if __name__ == "__main__":
             if event.type == pygame.KEYDOWN:
                 changed = False
                 if event.key == pygame.K_LEFT:
-                    seed -= 1
+                    mode -= 1
                     changed = True
                 if event.key == pygame.K_RIGHT:
-                    seed += 1
+                    mode += 1
                     changed = True
+                mode %= 2
                 if changed:
-                    generate_terrain(field, seed)
-                    print(seed)
-                    render_field(field_surface, field, calc_elev_color)
+                    if mode == 0:
+                        color_func = calc_elev_color
+                    else:
+                        color_func = calc_stpn_color
+                    render_field(field_surface, field, color_func)
                     window.blit(field_surface, [0, 0])
                     pygame.display.update()
         if not running:
