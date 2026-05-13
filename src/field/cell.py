@@ -43,7 +43,7 @@ class Cell:
         self.cluster = None
 
     def register_cluster(self, cluster):
-        """Register that a cluster exists in this cell.
+        """Registers that a cluster exists in this cell.
 
         Args:
             cluster (src.npc.cluster.Cluster): Cluster to register.

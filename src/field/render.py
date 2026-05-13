@@ -4,16 +4,13 @@ import itertools
 
 import matplotlib.cm as cm
 import numpy as np
-import pygame
 
 from src.field import (
     ELEV_STD,
     SEA_LEVEL,
 )
 from src.field.cell import Cell
-
-RENDER_CELL_WIDTH = 4.0
-RENDER_CELL_HEIGHT = 4.0
+from src.graphics.map import render_map_cell
 
 RENDER_ELEV_SEA_COLOR_DEEP = 7.0
 RENDER_ELEV_LAND_COLOR_SHALLOW = 23.0
@@ -111,23 +108,6 @@ def calc_stpn_color(cell):
     return color
 
 
-def calc_cell_rect(cell):
-    """Calculates a rect that encloses a cell's area.
-
-    Args:
-        cell (src.field.cell.Cell): Cell to render.
-
-    Returns:
-        out (pygame.Rect): Rect that encloses the cell's area.
-    """
-    return pygame.Rect(
-        float(RENDER_CELL_WIDTH*cell.pos[0]),
-        float(RENDER_CELL_HEIGHT*cell.pos[1]),
-        RENDER_CELL_WIDTH,
-        RENDER_CELL_HEIGHT,
-    )
-
-
 def render_cell(surface, cell, color_func):
     """Renders a cell on a surface.
 
@@ -138,8 +118,7 @@ def render_cell(surface, cell, color_func):
             calculate the rendering color.
     """
     color = color_func(cell)
-    rect = calc_cell_rect(cell)
-    pygame.draw.rect(surface, color, rect)
+    render_map_cell(surface, cell, color)
 
 
 def render_field(surface, field, color_func):

@@ -2,9 +2,8 @@
 
 import matplotlib.cm as cm
 import numpy as np
-import pygame
 
-from src.field.render import calc_cell_rect
+from src.graphics.map import render_map_cell
 
 RENDER_POPL_MAX = 250
 
@@ -35,5 +34,4 @@ def render_cluster(surface, cluster, color_func):
     if not cluster.alive:
         return
     color = color_func(cluster)
-    rect = calc_cell_rect(cluster.cell)
-    pygame.draw.rect(surface, color, rect)
+    render_map_cell(surface, cluster.cell, color)
