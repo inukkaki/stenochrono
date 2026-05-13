@@ -15,7 +15,10 @@ class Cell:
         stpn (float): Steepness. This value is calculated as the average
             elevation difference every 100 meters between neighbor cells.
         surface (int): State of this cell's surface.
-        cluster (src.npc.cluster.Cluster): Cluster that exists in this cell.
+        landmass (src.field.landmass.Landmass | None): Landmass that this cell
+            belongs to. None if the surface of this cell is sea.
+        cluster (src.npc.cluster.Cluster | None): Cluster that exists in this
+            cell.
     """
     SURFACE_SEA = 0
     SURFACE_LAND = 1
@@ -39,6 +42,7 @@ class Cell:
         self.stpn = 0.0  # Steepness
 
         self.surface = Cell.SURFACE_SEA
+        self.landmass = None
 
         self.cluster = None
 

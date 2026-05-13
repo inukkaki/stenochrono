@@ -10,6 +10,7 @@ from src.field import (
     SEA_LEVEL,
 )
 from src.field.cell import Cell
+from src.field.landmass import Landmass
 
 ELEV_GEN_N = -0.75  # Elevation at the northen end
 ELEV_GEN_S = 0.5    # Elevation at the southern end
@@ -246,6 +247,47 @@ def calc_stpns(field):
         cell.stpn /= len(cell.neighborhood)
 
 
+def _identify_continuous_land_cells(seed_cell):
+    """Identifies continuous land cells connected with a seed cell.
+
+    Args:
+        seed_cell (src.field.cell.Cell): Seed cell. The surface of this cell
+            must be land.
+
+    Returns:
+        out (list[src.field.cell.Cell]): Cells that make up a single continuous
+            landmass. The seed cell is always included in this list.
+    """
+    open_cells = [seed_cell]
+    close_cells = []
+    while len(open_cells) > 0:
+        cell = open_cells.pop()
+        close_cells.append(cell)
+        for neighbor in cell.neighborhood:
+            not_in_open_cells = neighbor not in open_cells
+            not_in_close_cells = neighbor not in close_cells
+            is_land = neighbor.surface == Cell.SURFACE_LAND
+            if not_in_open_cells and not_in_close_cells and is_land:
+                open_cells.append(neighbor)
+    return close_cells
+
+
+def identify_landmasses(field):
+    """Identifies landmasses on a field.
+
+    Args:
+        field (src.field.field.Field): Field to generate the terrain on.
+    """
+    num = 0
+    for cell in itertools.chain.from_iterable(field.cells):
+        if cell.landmass is not None or cell.surface != Cell.SURFACE_LAND:
+            continue
+        close_cells = _identify_continuous_land_cells(cell)
+        landmass = Landmass(num, close_cells)
+        field.landmasses.append(landmass)
+        num += 1
+
+
 def generate_terrain(field, seed):
     """Generates the terrain on a field.
 
@@ -258,3 +300,4 @@ def generate_terrain(field, seed):
     generate_elevs(field, rng)
     determine_sea_or_land(field)
     calc_stpns(field)
+    identify_landmasses(field)

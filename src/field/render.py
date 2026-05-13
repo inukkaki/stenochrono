@@ -125,10 +125,27 @@ def render_field(surface, field, color_func):
     """Render a field on a surface.
 
     Args:
-        surface (pygame.Surface): Surface for rendering the cell.
+        surface (pygame.Surface): Surface for rendering the field.
         field (src.field.field.Field): Field to render.
         color_func (Callable[src.field.cell.Cell, numpy.NDArray]): Function to
             calculate the rendering color.
     """
     for cell in itertools.chain.from_iterable(field.cells):
         render_cell(surface, cell, color_func)
+
+
+def render_landmasses(surface, field):
+    """Render landmasses in a field.
+
+    Args:
+        surface (pygame.Surface): Surface for rendering the landmasses.
+        field (src.field.field.Field): Field to render.
+    """
+    for cell in itertools.chain.from_iterable(field.cells):
+        if cell.landmass is None:
+            c = calc_elev_sea_color(cell.elev)
+            color = np.array([c, c, c, 255.0], dtype=np.float32)
+        else:
+            x = cell.landmass.num % 20
+            color = 255.0*np.array(cm.tab20(x), dtype=np.float32)
+        render_map_cell(surface, cell, color)

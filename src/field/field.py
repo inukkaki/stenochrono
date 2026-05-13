@@ -23,6 +23,8 @@ class Field:
         height (int): Number of rows in the cell array.
         cells (list[list[src.field.cell.Cell]]): 2D array of cells.
         seed (int | None): Seed value of this field.
+        landmasses (list[src.field.landmass.Landmass]): Landmasses that exist
+            in this field.
     """
 
     def __init__(self):
@@ -41,6 +43,8 @@ class Field:
         self.set_neighborhood_of_cells()
 
         self.seed = None
+
+        self.landmasses = []
 
     def set_neighborhood_of_cells(self):
         """Sets every cell's neighborhood in the array."""
