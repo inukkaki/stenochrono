@@ -15,6 +15,7 @@ class Cell:
         stpn (float): Steepness. This value is calculated as the average
             elevation difference every 100 meters between neighbor cells.
         surface (int): State of this cell's surface.
+        cluster (src.npc.cluster.Cluster): Cluster that exists in this cell.
     """
     SURFACE_SEA = 0
     SURFACE_LAND = 1
@@ -38,3 +39,21 @@ class Cell:
         self.stpn = 0.0  # Steepness
 
         self.surface = Cell.SURFACE_SEA
+
+        self.cluster = None
+
+    def register_cluster(self, cluster):
+        """Register that a cluster exists in this cell.
+
+        Args:
+            cluster (src.npc.cluster.Cluster): Cluster to register.
+
+        Returns:
+            out (bool): True unless another cluster is already registered;
+                otherwise, False.
+        """
+        result = False
+        if self.cluster is None:
+            self.cluster = cluster
+            result = True
+        return result
