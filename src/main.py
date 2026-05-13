@@ -7,6 +7,8 @@ import pygame.locals
 from src.field.field import Field
 from src.field.render import render_field, calc_elev_color, calc_stpn_color
 from src.field.terrain import generate_terrain
+from src.npc.cluster import Cluster
+from src.npc.render import render_cluster, calc_popl_color
 
 #DEBUG
 import numpy as np
@@ -36,8 +38,14 @@ if __name__ == "__main__":
     render_field(field_surface, field, calc_elev_color)
     mode = 0
 
+    cluster = Cluster(field.cells[50][100], 100)
+
+    popl_surface = pygame.Surface(size=[1026, 514], flags=pygame.SRCALPHA)
+    render_cluster(popl_surface, cluster, calc_popl_color)
+
     window.fill([0, 0, 0])
     window.blit(field_surface, [0, 0])
+    window.blit(popl_surface, [0, 0])
     pygame.display.update()
 
     # Main loop
